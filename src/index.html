@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title></title>
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@next/css/pico.min.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
+  <style>
+    .drag {
+      -webkit-app-region: drag;
+    }
+
+    .container {
+      -webkit-app-region: no-drag;
+    }
+
+    button {
+      width: 100%;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <br>
+    <input id="entree_membre" type="text" placeholder="Tapez un morceau du nom du membre"
+      onkeydown="chercher_membre(event)">
+    <br>
+    <select id="liste_membres">
+    </select>
+    <button class="drag"></button>
+  </div>
+</body>
+
+<script src="dolibarrAPI.js"></script>
+
+<script>
+
+
+
+  api = new DolibarrAPI(localStorage.getItem("pdv_fablab_url"));
+
+  
+
+  api.login(localStorage.getItem("pdv_fablab_token")).then(function (isLoggedIn) {
+    if (isLoggedIn) {
+      // Code à exécuter après une connexion réussie
+      console.log("Login réussi");
+    } else {
+      // Code à exécuter après une connexion échouée
+      console.log("Échec de la connexion");
+      document.location.href = "login.html";
+    }
+  });
+
+  function chercher_membre(event) {
+    entree_machine = document.getElementById("entree_membre").value;
+    if (event.key === "Enter" || event.key === undefined) {
+      username = document.getElementById("entree_membre").value;
+      console.log(document.getElementById("entree_membre").value.length);
+      api.getMember(username).then(data => {
+        options_membres = [];
+        data.forEach(data => {
+          if (data.firstname != null && data.lastname != null) {
+            options_membres.push(data.firstname + " " + data.lastname);
+          } else {
+            options_membres.push("ENTREPRISE: " + data.societe);
+          }
+        });
+        change_options(options_membres);
+      });
+    }
+  }
+
+  function change_options(nouvellesValeurs) {
+    console.log("ChangeOptions");
+    // Supprime toutes les options actuelles du champ select
+    const selectElement = document.getElementById("liste_membres"); // Remplace "votreSelect" par l'ID de votre champ select
+    selectElement.innerHTML = "";
+    // Ajoute les nouvelles options au champ select
+    nouvellesValeurs.forEach(valeur => {
+      const option = document.createElement("option");
+      option.text = valeur;
+      selectElement.add(option);
+    });
+  }
+</script>

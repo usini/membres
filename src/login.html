@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title></title>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@next/css/pico.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
+    <style>
+        .drag {
+            -webkit-app-region: drag;
+        }
+
+        .container {
+            -webkit-app-region: no-drag;
+        }
+
+        button {
+            width: 100%;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1> Serveur </h1>
+        <input id="server_input" type="text" placeholder="https://dolibarr.example.org" onkeydown="">
+        <button id="btnCheckServer" onclick="checkServer();">
+            <i class="bi bi-bookmark-check"></i> Vérification
+        </button>
+        <div id="messageServer">
+        </div>
+        <h1> Token </h1>
+        <input id="dolikey" type="password">
+       
+        <button id="btnCheckServer" onclick="enterPassword();">
+           
+            <i class="bi bi-bookmark-check"></i> Vérification
+        </button>
+        <div id="messageToken">
+        </div>
+    </div>
+</body>
+<script src="dolibarrAPI.js"></script>
+<script>
+    if(localStorage.getItem("pdv_fablab_url") !== undefined){
+        document.getElementById("server_input").value = localStorage.getItem("pdv_fablab_url");
+    }
+
+    api = new DolibarrAPI();
+    function checkServer() {
+        var serveur_test = document.getElementById("server_input").value
+        api.testServer(serveur_test).then(status => {
+            console.log("Etat du " + serveur_test + " est " + status);
+            if (status) {
+                createAlert("messageServer", "success", "🆗 Serveur connecté!");
+                localStorage.setItem("pdv_fablab_url", serveur_test);
+            } else {
+                createAlert("messageServer", "danger", "❌ Serveur invalide");
+            }
+        });
+    }
+
+    function createAlert(selectedDiv, type, message) {
+        var selectedDiv = document.getElementById(selectedDiv);
+        selectedDiv.innerHTML += `<div>${message}</div>`
+    }
+    function enterPassword() {
+
+            api.url = localStorage.getItem("pdv_fablab_url");
+            api.login(document.getElementById("dolikey").value).then(result => {
+                if (result) {
+                    createAlert("messageToken", "success", "🆗 Login OK");
+                    localStorage.setItem("pdv_fablab_token", document.getElementById("dolikey").value);
+                    document.location.href = "index.html";
+                } else {
+                    createAlert("messageToken", "danger", "❌ Login failed");
+                }
+                
+            });
+        
+    }
+</script>
