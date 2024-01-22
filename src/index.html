@@ -25,26 +25,37 @@
 </head>
 
 <body>
-  <div class="container">
-    <br>
-    <input id="entree_membre" type="text" placeholder="Tapez un morceau du nom du membre"
-      onkeydown="chercher_membre(event)">
-    <br>
-    <select id="liste_membres">
-    </select>
-    <button class="drag"><i class="bi bi-arrows-move"></i></button>
+
+
+  <span style="background-color: rgb(34, 34, 121);width:75%;text-align:center;color:white"
+    class="drag">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Déplacer&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+  <span style="background-color: rgb(190, 55, 55);width:25%;color:white;" id="closebtn">&nbsp;&nbsp;X&nbsp;&nbsp;
+  </span>
+
   </div>
+  <input id="entree_membre" type="text" placeholder="Tapez un morceau du nom du membre"
+    onkeydown="chercher_membre(event)">
+  <br>
+  <select id="liste_membres">
+  </select>
+
+
+
 </body>
 
 <script src="dolibarrAPI.js"></script>
 
 <script>
 
+  let closebtn = document.getElementById('closebtn');
 
+  closebtn.addEventListener('click', (e) => {
+    window.application.close();
+  });
 
   api = new DolibarrAPI(localStorage.getItem("pdv_fablab_url"));
 
-  
+
 
   api.login(localStorage.getItem("pdv_fablab_token")).then(function (isLoggedIn) {
     if (isLoggedIn) {
@@ -64,17 +75,23 @@
       console.log(document.getElementById("entree_membre").value.length);
       api.getMember(username).then(data => {
         options_membres = [];
-        data.forEach(data => {
-          if (data.firstname != null && data.lastname != null) {
-            options_membres.push(data.firstname + " " + data.lastname);
-          } else {
-            options_membres.push("ENTREPRISE: " + data.societe);
-          }
-        });
-        change_options(options_membres);
+        console.log(data);
+        if (data != null) {
+          data.forEach(data => {
+            if (data.firstname != null && data.lastname != null) {
+              options_membres.push(data.firstname + " " + data.lastname);
+            } else {
+              options_membres.push("ENTREPRISE: " + data.societe);
+            }
+          });
+
+          change_options(options_membres);
+        }
+
       });
     }
   }
+
 
   function change_options(nouvellesValeurs) {
     console.log("ChangeOptions");

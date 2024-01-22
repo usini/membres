@@ -47,7 +47,13 @@ class DolibarrAPI {
       });
       return this.usersList;
     } catch (error) {
-      console.error(error);
+      if (error.toString().includes("404")) {
+        console.log("non trouvé");
+      } else {
+        console.error(error);
+        alert("error");
+        document.location.href = "login.html";
+      }
       return null; // Retourne null en cas d'erreur
     }
   }
@@ -72,6 +78,7 @@ class DolibarrAPI {
       return this.usersList;
     } catch (error) {
       console.error(error);
+      alert(error);
       return null; // Retourne null en cas d'erreur
     }
   }
@@ -153,6 +160,7 @@ class DolibarrAPI {
       return this.user;
     } catch (error) {
       console.error(error);
+      alert(error);
       return null; // Retourne null en cas d'erreur
     }
   }

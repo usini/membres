@@ -25,28 +25,39 @@
 </head>
 
 <body>
+    <span style="background-color: rgb(34, 34, 121);width:75%;text-align:center;color:white"
+        class="drag">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Déplacer&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+    <span style="background-color: rgb(190, 55, 55);width:25%;color:white;" id="closebtn">&nbsp;&nbsp;X&nbsp;&nbsp;
+    </span>
+
     <div class="container">
-        <h1> Serveur </h1>
+        <h1 class="drag"> Serveur </h1>
         <input id="server_input" type="text" placeholder="https://dolibarr.example.org" onkeydown="">
         <button id="btnCheckServer" onclick="checkServer();">
             <i class="bi bi-bookmark-check"></i> Vérification
         </button>
-        <div id="messageServer">
+        <div class="drag" id="messageServer">
         </div>
-        <h1> Token </h1>
+        <h1 class="drag"> Token </h1>
         <input id="dolikey" type="password">
-       
+
         <button id="btnCheckServer" onclick="enterPassword();">
-           
-            <i class="bi bi-bookmark-check"></i> Vérification
+
+            <i class="bi bi-bookmark-check drag"></i> Vérification
         </button>
-        <div id="messageToken">
+        <div class="drag" id="messageToken">
         </div>
     </div>
 </body>
 <script src="dolibarrAPI.js"></script>
 <script>
-    if(localStorage.getItem("pdv_fablab_url") !== undefined){
+    let closebtn = document.getElementById('closebtn');
+
+    closebtn.addEventListener('click', (e) => {
+        window.application.close();
+    });
+
+    if (localStorage.getItem("pdv_fablab_url") !== undefined) {
         document.getElementById("server_input").value = localStorage.getItem("pdv_fablab_url");
     }
 
@@ -70,17 +81,17 @@
     }
     function enterPassword() {
 
-            api.url = localStorage.getItem("pdv_fablab_url");
-            api.login(document.getElementById("dolikey").value).then(result => {
-                if (result) {
-                    createAlert("messageToken", "success", "🆗 Login OK");
-                    localStorage.setItem("pdv_fablab_token", document.getElementById("dolikey").value);
-                    document.location.href = "index.html";
-                } else {
-                    createAlert("messageToken", "danger", "❌ Login failed");
-                }
-                
-            });
-        
+        api.url = localStorage.getItem("pdv_fablab_url");
+        api.login(document.getElementById("dolikey").value).then(result => {
+            if (result) {
+                createAlert("messageToken", "success", "🆗 Login OK");
+                localStorage.setItem("pdv_fablab_token", document.getElementById("dolikey").value);
+                document.location.href = "index.html";
+            } else {
+                createAlert("messageToken", "danger", "❌ Login failed");
+            }
+
+        });
+
     }
 </script>
